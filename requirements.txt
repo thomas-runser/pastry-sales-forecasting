@@ -1,0 +1,10 @@
+numpy
+pandas
+openpyxl
+requests
+jpholiday
+jupyter
+scikit-learn
+matplotlib
+joblib
+lightgbm
