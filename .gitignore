@@ -22,3 +22,9 @@ outputs/*
 .idea/
 .DS_Store
 Thumbs.db
+
+# Tableau temporary recovery files
+*.twbr
+
+# Packaged Tableau workbooks may contain local machine paths
+/tableau/*.twbx

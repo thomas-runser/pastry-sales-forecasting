@@ -26,6 +26,7 @@ THREE_DAY_PRODUCTS = {
 SOURCE_COLUMN_RENAMES = {
     "残在庫": "ClosingStock",
     "製造数": "Production",
+    "予測": "Forecast",
 }
 
 FORM_SEASONAL_COLUMN = "季節シュー"
@@ -174,13 +175,15 @@ def load_production(
     production_file: str | Path,
     stores: list[str],
     sheet_names: list[str],
+    include_forecast: bool = False,
 ) -> pd.DataFrame:
     """Load and clean monthly production worksheets.
 
     ``残在庫`` is the sellable stock remaining at the end of the recorded date,
     so it is returned as ``ClosingStock``. The workbook's ``Production`` value
     is not moved here; private mode aligns it to the following selling date with
-    :func:`align_production_to_sales_date`.
+    :func:`align_production_to_sales_date`. Set ``include_forecast=True`` only
+    for public exports that need the workbook's synthetic ``Forecast`` field.
     """
     dfs = []
 
@@ -213,10 +216,11 @@ def load_production(
         dfs.append(sheet_df)
 
     production = pd.concat(dfs, ignore_index=True)
-    production = production.drop(
-        columns=["予測"],
-        errors="ignore",
-    )
+    if not include_forecast:
+        production = production.drop(
+            columns=["予測"],
+            errors="ignore",
+        )
     production = production.rename(columns=SOURCE_COLUMN_RENAMES)
 
     required_columns = {
